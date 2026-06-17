@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio S3–S4 — Enzo Achaintre</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#0E0E12;--bg2:#14141A;--bg3:#1C1C24;
+  --line:rgba(255,255,255,0.06);
+  --w:#F0EDE8;--mu:rgba(240,237,232,0.36);--dim:rgba(240,237,232,0.12);
+  --gold:#C8A96E;--blue:#6E8FC8;--teal:#6EC8A9;
+  --sw:190px;
+  --fd:'DM Serif Display',Georgia,serif;
+  --fs:'DM Sans',system-ui,sans-serif;
+  --fm:'DM Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fs);background:var(--bg);color:var(--w);-webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+button{font-family:var(--fs);cursor:pointer;border:none;background:none;color:inherit;}
+
+/* LAYOUT */
+.shell{display:flex;min-height:100vh;}
+.main{flex:1;min-width:0;}
+.view{display:none;}
+.view.on{display:block;}
+
+/* SIDEBAR */
+.sidebar{width:var(--sw);flex-shrink:0;background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;position:sticky;top:0;height:100vh;padding:32px 20px;overflow-y:auto;}
+.sb-logo{font-family:var(--fd);font-size:1.05rem;line-height:1.3;margin-bottom:4px;}
+.sb-sub{font-family:var(--fm);font-size:.58rem;color:var(--gold);text-transform:uppercase;letter-spacing:.14em;margin-bottom:36px;}
+.sb-nav{list-style:none;display:flex;flex-direction:column;gap:2px;}
+.sb-nav a{display:flex;align-items:center;gap:9px;padding:9px 10px;font-size:.82rem;color:var(--mu);border-left:2px solid transparent;transition:all .15s;}
+.sb-nav a .n{font-family:var(--fm);font-size:.6rem;color:var(--gold);flex-shrink:0;min-width:16px;}
+.sb-nav a:hover{color:var(--w);padding-left:15px;}
+.sb-nav a.on{color:var(--w);border-left-color:var(--gold);background:rgba(200,169,110,.06);}
+.sb-foot{font-family:var(--fm);font-size:.58rem;color:var(--mu);line-height:2;margin-top:24px;}
+.sb-foot strong{color:rgba(240,237,232,.6);display:block;font-family:var(--fs);font-weight:500;font-size:.76rem;margin-bottom:3px;}
+
+/* MOBILE NAV */
+.mob{display:none;position:sticky;top:0;z-index:50;background:var(--bg2);border-bottom:1px solid var(--line);padding:13px 18px 0;}
+.mob-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px;}
+.mob-logo{font-family:var(--fd);font-size:.92rem;}
+.mob-sub{font-family:var(--fm);font-size:.56rem;color:var(--gold);text-transform:uppercase;letter-spacing:.12em;}
+.mob-tabs{display:flex;gap:5px;overflow-x:auto;padding-bottom:11px;scrollbar-width:none;}
+.mob-tabs::-webkit-scrollbar{display:none;}
+.mob-tabs a{font-family:var(--fm);font-size:.6rem;white-space:nowrap;padding:6px 10px;border:1px solid var(--line);border-radius:20px;color:var(--mu);flex-shrink:0;transition:all .15s;}
+.mob-tabs a.on{border-color:var(--gold);color:var(--w);background:rgba(200,169,110,.09);}
+
+/* BREADCRUMB */
+.bc{display:flex;align-items:center;gap:7px;padding:12px 40px;border-bottom:1px solid var(--line);font-family:var(--fm);font-size:.6rem;color:var(--mu);flex-wrap:wrap;}
+.bc a:hover{color:var(--gold);}
+.bc .sep{opacity:.25;}
+.bc .cur{color:var(--w);}
+
+/* TOP NAV BAR */
+.topnav{position:sticky;top:0;z-index:40;background:var(--bg2);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 40px;min-height:54px;gap:12px;flex-wrap:wrap;}
+.tnav-btn{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:.62rem;color:var(--mu);padding:7px 12px;border:1px solid var(--line);border-radius:20px;transition:all .15s;white-space:nowrap;}
+.tnav-btn:hover{color:var(--w);border-color:rgba(255,255,255,.16);background:var(--bg3);}
+.tnav-btn.off{opacity:.22;pointer-events:none;}
+.pills{display:flex;align-items:center;gap:5px;}
+.pill{font-family:var(--fm);font-size:.58rem;padding:5px 11px;border:1px solid var(--line);border-radius:20px;color:var(--mu);cursor:pointer;transition:all .15s;}
+.pill:hover{color:var(--w);}
+.pill.on{color:var(--bg);background:var(--gold);border-color:var(--gold);}
+.pill.on2{color:var(--bg);background:var(--teal);border-color:var(--teal);}
+
+/* COVER */
+.cover{min-height:100vh;display:grid;grid-template-rows:1fr auto;}
+.cover-hero{display:flex;flex-direction:column;justify-content:flex-end;padding:64px 40px 52px;border-bottom:1px solid var(--line);}
+.cover-tag{font-family:var(--fm);font-size:.68rem;text-transform:uppercase;letter-spacing:.2em;color:var(--gold);margin-bottom:20px;}
+.cover-h1{font-family:var(--fd);font-size:clamp(2.5rem,6vw,5.5rem);line-height:.95;letter-spacing:-.01em;margin-bottom:16px;}
+.cover-h1 em{font-style:italic;color:var(--gold);}
+.cover-meta{font-family:var(--fm);font-size:.68rem;color:var(--mu);letter-spacing:.08em;}
+
+/* COMP GRID */
+.cgrid{display:grid;grid-template-columns:repeat(5,1fr);}
+.cc{padding:24px 20px;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-height:140px;cursor:pointer;transition:background .15s;}
+.cc:last-child{border-right:none;}
+.cc:hover{background:var(--bg3);}
+.cc:hover .cc-arr{transform:translateX(4px);}
+.cc-num{font-family:var(--fm);font-size:.6rem;color:var(--gold);}
+.cc-title{font-family:var(--fd);font-size:1rem;line-height:1.2;}
+.cc-foot{display:flex;justify-content:space-between;align-items:flex-end;font-family:var(--fm);font-size:.54rem;color:var(--mu);}
+.cc-sub{max-width:11ch;line-height:1.5;}
+.cc-arr{transition:transform .15s;flex-shrink:0;}
+
+/* COMP HEADER */
+.comp-hd{padding:48px 40px 36px;border-bottom:1px solid var(--line);}
+.comp-eye{font-family:var(--fm);font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;color:var(--gold);margin-bottom:12px;}
+.comp-eye.t2{color:var(--teal);}
+.comp-h1{font-family:var(--fd);font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.05;margin-bottom:8px;}
+.comp-lvl{font-family:var(--fm);font-size:.6rem;color:var(--mu);}
+
+/* AC CARDS */
+.ac-cards{display:flex;flex-direction:column;}
+.ac-card{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:28px 40px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s;}
+.ac-card:last-child{border-bottom:none;}
+.ac-card:hover{background:var(--bg3);}
+.ac-card:hover .ac-arr{transform:translateX(5px);color:var(--gold);}
+.ac-left{display:flex;align-items:center;gap:20px;}
+.ac-idx{font-family:var(--fm);font-size:.65rem;color:var(--gold);border:1px solid var(--line);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ac-lbl{font-family:var(--fm);font-size:.56rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mu);margin-bottom:5px;}
+.ac-ttl{font-family:var(--fd);font-size:clamp(.95rem,1.6vw,1.25rem);line-height:1.25;}
+.ac-cnt{font-family:var(--fm);font-size:.54rem;color:var(--dim);margin-top:4px;}
+.ac-arr{font-size:1rem;color:var(--mu);transition:all .15s;flex-shrink:0;}
+
+/* AC PAGE HEADER */
+.ac-hd{padding:40px 40px 28px;border-bottom:1px solid var(--line);}
+.ac-eye{font-family:var(--fm);font-size:.6rem;text-transform:uppercase;letter-spacing:.18em;color:var(--gold);margin-bottom:10px;}
+.ac-eye.t2{color:var(--teal);}
+.ac-h1{font-family:var(--fd);font-size:clamp(1.3rem,2.5vw,2rem);line-height:1.15;margin-bottom:6px;}
+.ac-sub{font-family:var(--fm);font-size:.58rem;color:var(--mu);}
+
+/* QUICK NAV */
+.ex-quicknav{display:flex;gap:8px;flex-wrap:wrap;padding:20px 40px 0;}
+.ex-quicknav a{font-family:var(--fm);font-size:.6rem;padding:5px 12px;border:1px solid var(--line);border-radius:20px;color:var(--mu);transition:all .15s;}
+.ex-quicknav a:hover{color:var(--w);border-color:rgba(255,255,255,.2);}
+
+/* EXAMPLE GROUPS */
+.ex-groups{padding:0 40px 60px;}
+.ex-group{margin-top:44px;padding-top:36px;border-top:1px solid var(--line);}
+.ex-group:first-child{border-top:none;}
+.ex-group-hd{display:flex;align-items:baseline;gap:14px;margin-bottom:24px;}
+.ex-group-num{font-family:var(--fm);font-size:.62rem;color:var(--gold);}
+.ex-group-num.t2{color:var(--teal);}
+.ex-group-title{font-family:var(--fd);font-size:1.3rem;line-height:1.2;}
+
+/* MEDIA GRID */
+.ex-media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;}
+.ex-media-item{background:var(--bg3);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;}
+.ex-media-item img{width:100%;height:220px;object-fit:contain;object-position:center;background:var(--bg2);}
+.ex-media-item video{width:100%;max-height:300px;background:#000;}
+.ex-media-caption{font-family:var(--fm);font-size:.54rem;color:var(--mu);padding:9px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+.ex-media-badge{font-size:.5rem;padding:2px 7px;border-radius:10px;flex-shrink:0;}
+.ex-media-badge.vid{color:var(--teal);border:1px solid rgba(110,200,169,.3);background:rgba(110,200,169,.06);}
+.ex-media-badge.img{color:var(--mu);border:1px solid var(--line);background:var(--bg2);}
+
+/* PAGE FOOTER */
+.pgf{display:flex;justify-content:space-between;padding:24px 40px;border-top:1px solid var(--line);gap:16px;flex-wrap:wrap;}
+.pgf a{display:flex;flex-direction:column;gap:4px;color:var(--mu);transition:color .15s;}
+.pgf a:hover{color:var(--gold);}
+.pgf .fd2{font-family:var(--fm);font-size:.56rem;text-transform:uppercase;letter-spacing:.12em;}
+.pgf .ft2{font-family:var(--fd);font-size:.88rem;color:var(--w);}
+.pgf .right{text-align:right;align-items:flex-end;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .sidebar{display:none;}
+  .mob{display:block;}
+  .bc{padding:10px 16px;}
+  .topnav{padding:8px 16px;gap:8px;}
+  .cover-hero{padding:36px 16px 36px;}
+  .comp-hd,.ac-hd{padding:24px 16px 20px;}
+  .ac-card{padding:20px 16px;}
+  .ex-quicknav,.ex-groups,.pgf{padding-left:16px;padding-right:16px;}
+  .cgrid{grid-template-columns:1fr 1fr;}
+  .cc:nth-child(2n){border-right:none;}
+  .cc:nth-child(n+3){border-top:1px solid var(--line);}
+  .ex-media-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  .cgrid{grid-template-columns:1fr;}
+  .cc{border-right:none!important;border-top:1px solid var(--line)!important;}
+  .cc:first-child{border-top:none!important;}
+  .cover-h1{font-size:2.2rem;}
+  .ex-media-grid{grid-template-columns:1fr;}
+  .ac-left{gap:12px;}
+  .topnav{flex-wrap:wrap;height:auto;padding:10px 16px;}
+  .pills{order:1;width:100%;justify-content:center;padding:6px 0;}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<aside class="sidebar">
+  <div>
+    <div class="sb-logo">Enzo<br>Achaintre</div>
+    <div class="sb-sub">BUT TC · MDEE · S3–S4</div>
+    <ul class="sb-nav">
+      <li><a href="#" data-v="00" class="on"><span class="n">00</span>Accueil</a></li>
+      <li><a href="#" data-v="c01"><span class="n">01</span>Marketing</a></li>
+      <li><a href="#" data-v="c02"><span class="n">02</span>Vente</a></li>
+      <li><a href="#" data-v="c03"><span class="n">03</span>Communication</a></li>
+      <li><a href="#" data-v="c04"><span class="n">04</span>Mkt digital</a></li>
+      <li><a href="#" data-v="c05"><span class="n">05</span>E-business</a></li>
+    </ul>
+  </div>
+  <div class="sb-foot"><strong>Portfolio S3–S4</strong>IUT Vélizy-Rambouillet<br>2024 / 2026</div>
+</aside>
+
+<nav class="mob">
+  <div class="mob-top"><div class="mob-logo">Enzo Achaintre</div><div class="mob-sub">BUT TC · MDEE</div></div>
+  <div class="mob-tabs">
+    <a href="#" data-v="00" class="on">Accueil</a>
+    <a href="#" data-v="c01">01 Marketing</a>
+    <a href="#" data-v="c02">02 Vente</a>
+    <a href="#" data-v="c03">03 Communication</a>
+    <a href="#" data-v="c04">04 Mkt digital</a>
+    <a href="#" data-v="c05">05 E-business</a>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- ══ ACCUEIL ══ -->
+<div id="v00" class="view on">
+  <div class="cover">
+    <div class="cover-hero">
+      <div class="cover-tag">Portfolio · S3 – S4</div>
+      <h1 class="cover-h1">5 compétences,<br>un <em>parcours.</em></h1>
+      <div class="cover-meta">BUT TC &nbsp;·&nbsp; Parcours MDEE &nbsp;·&nbsp; 2024 – 2026</div>
+    </div>
+    <div class="cgrid">
+      <div class="cc" onclick="go('c01')"><div><div class="cc-num">01</div><div class="cc-title">Marketing</div></div><div class="cc-foot"><span class="cc-sub">Conduire les actions marketing</span><span class="cc-arr">→</span></div></div>
+      <div class="cc" onclick="go('c02')"><div><div class="cc-num">02</div><div class="cc-title">Vente</div></div><div class="cc-foot"><span class="cc-sub">Vendre une offre commerciale</span><span class="cc-arr">→</span></div></div>
+      <div class="cc" onclick="go('c03')"><div><div class="cc-num">03</div><div class="cc-title">Communication</div></div><div class="cc-foot"><span class="cc-sub">Communiquer l'offre commerciale</span><span class="cc-arr">→</span></div></div>
+      <div class="cc" onclick="go('c04')"><div><div class="cc-num">04</div><div class="cc-title">Marketing digital</div></div><div class="cc-foot"><span class="cc-sub">Gérer une activité digitale</span><span class="cc-arr">→</span></div></div>
+      <div class="cc" onclick="go('c05')"><div><div class="cc-num">05</div><div class="cc-title">E-business</div></div><div class="cc-foot"><span class="cc-sub">Développer un projet e-business</span><span class="cc-arr">→</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ C01 MARKETING ══ -->
+<div id="vc01" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><span class="cur">Marketing</span></div>
+  <div class="comp-hd"><div class="comp-eye">Compétence 01</div><h1 class="comp-h1">Marketing</h1><div class="comp-lvl">Conduire les actions marketing · Niveau 2</div></div>
+  <div class="ac-cards">
+    <div class="ac-card" onclick="go('a01-1')"><div class="ac-left"><div class="ac-idx">01</div><div><div class="ac-lbl">AC 1/3</div><div class="ac-ttl">Concevoir un mix étendu pour une offre complexe</div><div class="ac-cnt">3 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a01-2')"><div class="ac-left"><div class="ac-idx">02</div><div><div class="ac-lbl">AC 2/3</div><div class="ac-ttl">Mettre en œuvre une étude de marché dans un environnement complexe</div><div class="ac-cnt">2 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a01-3')"><div class="ac-left"><div class="ac-idx">03</div><div><div class="ac-lbl">AC 3/3</div><div class="ac-ttl">Mettre en place une stratégie marketing dans un environnement complexe</div><div class="ac-cnt">2 exemples</div></div></div><div class="ac-arr">→</div></div>
+  </div>
+  <nav class="pgf"><a href="#" onclick="go('00');return false;"><span class="fd2">← Retour</span><span class="ft2">Accueil</span></a><a href="#" onclick="go('c02');return false;" class="right"><span class="fd2">Suivant →</span><span class="ft2">02 — Vente</span></a></nav>
+</div>
+
+<!-- ══ C02 VENTE ══ -->
+<div id="vc02" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><span class="cur">Vente</span></div>
+  <div class="comp-hd"><div class="comp-eye">Compétence 02</div><h1 class="comp-h1">Vente</h1><div class="comp-lvl">Vendre une offre commerciale · Niveau 2</div></div>
+  <div class="ac-cards">
+    <div class="ac-card" onclick="go('a02-1')"><div class="ac-left"><div class="ac-idx">01</div><div><div class="ac-lbl">AC 1/3</div><div class="ac-ttl">Convaincre en exprimant avec empathie l'offre en termes davantage personnalisés</div><div class="ac-cnt">2 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a02-2')"><div class="ac-left"><div class="ac-idx">02</div><div><div class="ac-lbl">AC 2/3</div><div class="ac-ttl">Négocier le prix : défendre, valoriser l'offre en percevant les stratégies d'achat</div><div class="ac-cnt">3 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a02-3')"><div class="ac-left"><div class="ac-idx">03</div><div><div class="ac-lbl">AC 3/3</div><div class="ac-ttl">Utiliser les outils d'aide à la vente à bon escient pour convaincre</div><div class="ac-cnt">2 exemples</div></div></div><div class="ac-arr">→</div></div>
+  </div>
+  <nav class="pgf"><a href="#" onclick="go('c01');return false;"><span class="fd2">← Précédent</span><span class="ft2">01 — Marketing</span></a><a href="#" onclick="go('c03');return false;" class="right"><span class="fd2">Suivant →</span><span class="ft2">03 — Communication</span></a></nav>
+</div>
+
+<!-- ══ C03 COMMUNICATION ══ -->
+<div id="vc03" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><span class="cur">Communication</span></div>
+  <div class="comp-hd"><div class="comp-eye">Compétence 03</div><h1 class="comp-h1">Communication</h1><div class="comp-lvl">Communiquer l'offre commerciale · Niveau 2</div></div>
+  <div class="ac-cards">
+    <div class="ac-card" onclick="go('a03-1')"><div class="ac-left"><div class="ac-idx">01</div><div><div class="ac-lbl">AC 1/3</div><div class="ac-ttl">Mettre en œuvre une stratégie digitale : réseaux sociaux</div><div class="ac-cnt">3 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a03-2')"><div class="ac-left"><div class="ac-idx">02</div><div><div class="ac-lbl">AC 2/3</div><div class="ac-ttl">Proposer un plan de communication 360° en élaborant les supports et en veillant à leur efficacité</div><div class="ac-cnt">3 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a03-3')"><div class="ac-left"><div class="ac-idx">03</div><div><div class="ac-lbl">AC 3/3</div><div class="ac-ttl">Établir une stratégie de moyens en utilisant les indicateurs de choix des supports</div><div class="ac-cnt">3 exemples</div></div></div><div class="ac-arr">→</div></div>
+  </div>
+  <nav class="pgf"><a href="#" onclick="go('c02');return false;"><span class="fd2">← Précédent</span><span class="ft2">02 — Vente</span></a><a href="#" onclick="go('c04');return false;" class="right"><span class="fd2">Suivant →</span><span class="ft2">04 — Marketing digital</span></a></nav>
+</div>
+
+<!-- ══ C04 MARKETING DIGITAL ══ -->
+<div id="vc04" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><span class="cur">Marketing digital</span></div>
+  <div class="comp-hd"><div class="comp-eye t2">Compétence 04</div><h1 class="comp-h1">Marketing digital</h1><div class="comp-lvl">Gérer une activité digitale · Niveau 1</div></div>
+  <div class="ac-cards">
+    <div class="ac-card" onclick="go('a04-1')"><div class="ac-left"><div class="ac-idx">01</div><div><div class="ac-lbl">AC 1/3</div><div class="ac-ttl">Utiliser un cahier des charges e-business</div><div class="ac-cnt">3 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a04-2')"><div class="ac-left"><div class="ac-idx">02</div><div><div class="ac-lbl">AC 2/3</div><div class="ac-ttl">Mobiliser des indicateurs de performance en fonction du volume et de la variété des données</div><div class="ac-cnt">2 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a04-3')"><div class="ac-left"><div class="ac-idx">03</div><div><div class="ac-lbl">AC 3/3</div><div class="ac-ttl">Intégrer les spécificités du e-commerce</div><div class="ac-cnt">2 exemples</div></div></div><div class="ac-arr">→</div></div>
+  </div>
+  <nav class="pgf"><a href="#" onclick="go('c03');return false;"><span class="fd2">← Précédent</span><span class="ft2">03 — Communication</span></a><a href="#" onclick="go('c05');return false;" class="right"><span class="fd2">Suivant →</span><span class="ft2">05 — E-business</span></a></nav>
+</div>
+
+<!-- ══ C05 E-BUSINESS ══ -->
+<div id="vc05" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><span class="cur">E-business</span></div>
+  <div class="comp-hd"><div class="comp-eye t2">Compétence 05</div><h1 class="comp-h1">E-business &amp; entrepreneuriat</h1><div class="comp-lvl">Développer un projet e-business · Niveau 1</div></div>
+  <div class="ac-cards">
+    <div class="ac-card" onclick="go('a05-1')"><div class="ac-left"><div class="ac-idx">01</div><div><div class="ac-lbl">AC 1/3</div><div class="ac-ttl">Concevoir un modèle d'affaires simplifié</div><div class="ac-cnt">2 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a05-2')"><div class="ac-left"><div class="ac-idx">02</div><div><div class="ac-lbl">AC 2/3</div><div class="ac-ttl">Contribuer à l'enrichissement d'un projet collectif</div><div class="ac-cnt">2 exemples</div></div></div><div class="ac-arr">→</div></div>
+    <div class="ac-card" onclick="go('a05-3')"><div class="ac-left"><div class="ac-idx">03</div><div><div class="ac-lbl">AC 3/3</div><div class="ac-ttl">Utiliser les techniques de créativité individuelle et collective</div><div class="ac-cnt">3 exemples</div></div></div><div class="ac-arr">→</div></div>
+  </div>
+  <nav class="pgf"><a href="#" onclick="go('c04');return false;"><span class="fd2">← Précédent</span><span class="ft2">04 — Marketing digital</span></a><a href="#" onclick="go('00');return false;" class="right"><span class="fd2">↩ Retour</span><span class="ft2">Accueil</span></a></nav>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PAGES AC  — images via Google Drive direct
+     Format URL : https://lh3.googleusercontent.com/d/FILE_ID
+════════════════════════════════════════════ -->
+
+<!-- helper macro -->
+<script>
+// Convertit un ID Google Drive en URL d'image directe
+function gd(id){ return 'https://lh3.googleusercontent.com/d/'+id; }
+// IDs indexés par nom de fichier
+var ID = {
+  'Business M 1 P1':'1-9ZW-DQyC_ODiv8huJEFPv4G0zyjL1G5',
+  'Business M 2 P1':'102ObTFABbqEwfFubGQK9rzZhlw7HbxSF',
+  'Business M 2 P2':'1C9GkdR2zL3irm-RSbmz--yZU0bcoPXQM',
+  'Cahier 1 P1':'17ngzjOE9k-4eqGIxAJmt2Xz6EYdz8rT6',
+  'Cahier 1 P2':'1OeVfeQtOayKTYIUWA3of6YdUKx1sInRE',
+  'Cahier 2 P1':'1l1x61qHd2jbLXFnFvowQyP--zmBNhy6r',
+  'Cahier 2 P2':'1JAvr54rM-9fJ5mF_oxypq3dm8432r_Ud',
+  'Cahier 3 P1':'1UQS9ex8OF9FXOMy3UdDSYQ9DPRzufiRN',
+  'Cahier 3 P2':'1b5GebjcVvw7U8u2VlpUfrXoLtrRS9qUF',
+  'Cahier 3 P3':'1vCKlr7LaZy15u6oqqdSB2lXDmClQp9cK',
+  'Cahier 3 P4':'1PCWAiCIoVMBOqmv35aQSSt9xYXeF-DR9',
+  'Com 360 1 P1':'10qeF-IADqY3IR-s394yX9pIft1xzelgU',
+  'Com 360 2 P1':'13Tq9W9vUqmlbkocYVYSDQoKPWk80aJEE',
+  'Com 360 2 P2':'1Wfz7WhAkc5lJEtojsESGf9m5KhAcd6JR',
+  'Com 360 2 P3':'17v-lycueEha-iivadtEy6v821g5JDAEg',
+  'Com 360 3 P1':'1JNZ15kO9K0LG_En6qe6ScPbUEs2-Bjav',
+  'Com 360 3 P3':'1iyJ5Bb0fs64J4vSkZq1lPTCvkzIi7ky-',
+  'Créativité 1 P1':'1ssY655HKW4OR676SCmPtM0oEsqdxoCWS',
+  'Créativité 2 P1':'1K0ulNggd8Xr8_reNsjmKnb9orcrZffDd',
+  'Créativité 2 P2':'1vjjYwpbCYiOxoWRXacFNinAqnJECf2jH',
+  'Créativité 2 P3':'1alHNey5YcL5JUpnQ6Y7tFz6P1Wz5ZxW1',
+  'Créativité 2 P4':'1l9BomGlo7BlYTbQoVMs5Rm3ekLJ84_N0',
+  'Créativité 2 P5':'1qdn4BMXhyGOghN-guy41XTDAdt1nISRP',
+  'Créativité 3 P1':'1G2tA1fOf-zef04jvwcPqxaGdV3sb5SO5',
+  'Créativité 3 P2':'10CYwarbsPoTYsfwTr3YIIRisLnNf2aca',
+  'Créativité 3 P3':'1HCLKHOVC1xfYDa2rp6CCchEVVVE5Vpfd',
+  'Créativité 3 P4':'1sPs-6OXFybvprVX9o9I8wxopwIQ88AmY',
+  'Créativité 3 P5':'1dTuzppAix9Uanzw3VmGZlitwTDZaM113',
+  'Enrichissement 1 P1':'119siDSRzPXN_BvxA-5qHqVud-txealyD',
+  'Enrichissement 1 P2':'10V3AHFvT0r1RfaUvt1PgQ-NGUi12NHRZ',
+  'Enrichissement 1 P3':'1mQrfkWFkUPXdJBec6RqI9uk2LR6CpwSM',
+  'Enrichissement 1 P4':'1GmjoQY3-SGg5mIs4LJw4aUuS2JoaPQiZ',
+  'Enrichissement 2 P1':'13jV-1RKkC21EXCJxhRQa1NxKn8Ox7cjd',
+  'Enrichissement 2 P2':'1I-bIyfGY_aQ69tSMyooQyHW5vExwYMEe',
+  'Enrichissement 2 P3':'1surLBDCLHJwc3n-kruJmEiC5VfDSwy-2',
+  'Enrichissement 2 P4':'12qFRTP0a3iff7--ZLErYDBUI8v5ZVpOW',
+  'Enrichissement 2 P5':'1U4i_mWAgB0lL4rfn2uVnqVqhxCfb34Dp',
+  'Enrichissement 2 P6':'1ZIsK26bR1vE1AR1mUEzXu0Zk3kAF_Bci',
+  'Etude 1 P1':'1ZIsK26bR1vE1AR1mUEzXu0Zk3kAF_Bci',
+  'Etude 2 P1':'18C-d9Oqb6-bvKf-nQlmMnWn-WudvKBOh',
+  'Etude 2 P2':'16xtiov9hk999sgYerdpQ4IL3Kl2J6GLB',
+  'Etude 2 P3':'1bMcpEByMJdwJH3nS19kSqVrRQddO1Coc',
+  'Indic 1 P1':'1F-vgCF1h-_CkeQIdPj6Q2SekhPqJ8VOn',
+  'Indic 1 P2':'1SB6iReYe8pLewM_CjFy4wbagMaS4fRES',
+  'Indic 1 P3':'1pEDT5rdv0wiV0kdbyMWmy6B1RsJ35_sH',
+  'Indic 2 P1':'1oMxnheIhQus4SqUOFgkhb71qxOxqckfh',
+  'Indic 2 P2':'1kWxlZ74v51r8SwL0QVx_QNiFKiSP6oS3',
+  'Indic 2 P3':'1KIWYLJk0EWQT54pJB9PqafHqWEKvl5Cj',
+  'Mix 1 P1':'1h6jsP9xm6kS1mr3cYO8ZBVyoSnz42Pmd',
+  'Mix 2 P2':'1xVQOhFB6qcSSASXIkL7BTzKc6L4bV67X',
+  'Mix 3 P1':'1X7Ct2gSh76SB9bLCZCtwZNIN1Dixg7pj',
+  'Mix 3 P2':'1eKO93V4MeOQjIP1c90C-GPJxDH1s3ukI',
+  'Mix 3 P3':'1sG3B0vHaxoXdHFonwdSlkAouEx8N56mK',
+  'OAV 1 P1':'1I6Rhxe9dF3akc5YUxN_PNV0fW49uz0VM',
+  'OAV 1 P2':'1p0pFoMQnC9n5sGyNj7Z6bR6g87nqJyS9',
+  'OAV 1 P3':'1fk5LiQb2xqJGbOV0O-jPLGk_KiMfIlMI',
+  'OAV 2 P1':'1D2D3QJd80mbYnmQmKGsuxUeS7PA-WSJ0',
+  'OAV 2 P2':'1r17k9K0MbB8-aRJOvxflJVw5BftT5q6p',
+  'OAV 2 P3':'1NgWqJ7suCT4wIxGIyc7RSMH4BAEWg-cC',
+  'Offre 1 P1':'1_iEZODl5C3B-zI3ILnXWUYyobMMV_K5i',
+  'Offre 1 P2':'1scQpPqEnmjeQYTDmF8WuTBkszj4IRVQW',
+  'Offre 2 P1':'1xkRSHtdKnWrPnNE4XCZWD4Pu11jE2U9Y',
+  'Offre 2 P2':'1UcHEVScYsKJ0_jsvcRzfaQ4zyxsV1D5Z',
+  'Prix 1 P1':'1F_IOfL-Qwqx3Wycv6igGZgptPGFaE8re',
+  'Prix 1 P2':'1uKuFdGAz3p7FUXyhQ66XYCKc6DjoYYKu',
+  'Prix 2 P1':'1UNWv5bi2KljclZAKeom3SPhBlj1cWxDY',
+  'Prix 2 P2':'1T2r4UPk5bptMnpOEg3JV2ws-iBVjnL4a',
+  'Prix 3 P2':'1IpXWmXj7SUV0JayRotRYi6neQBQNkVV2',
+  'RS 1 P1':'1Srf3rx6pda9AtbJ65uWw-T5zEnF2R3kq',
+  'RS 2 P1':'1_A6u5AH8ccLLWYZ8UnFuXbE9jl9TgBru',
+  'RS 2 P2':'10BaCFQ96BhBDacTCrL6TTJPnmXSEARDs',
+  'RS 3 P1':'1-HOd1gJAdM6TMfx9qLgkKk_WiYbLclFB',
+  'RS 3 P2':'1Wy06_vUvCV1NmiN-Z0wj3IJx4DfhdEKj',
+  'RS 3 P3':'1O0btr-xN5ezjiP5ESpNLtjn7Xc8ns2sS',
+  'Spécificité 1 P1':'1lnlg84ki988n_0hNPWRyuRyl28zpKhv9',
+  'Spécificité 1 P2':'1bmkHVx8FSzgglBkOquLV1ObpiVeoFDXG',
+  'Spécificité 1 P3':'1OAOoBLA8w5-CiOk6njTvK8IzWSpTJdce',
+  'Spécificité 2 P1':'1poJNbG0ZM6vBCTCKv7Vg5KBfpmEZ4fl6',
+  'Spécificité 2 P2':'1-8z0uO5e2DRrMYODG11RDY_yJKrwyvBp',
+  'Spécificité 2 P3':'1rZRiLgFvF0ZIXi4XfbRDCXLspp10IWMW',
+  'Spécificité 2 P4':'18WrA8tl4nuU28n13t3yM1q5DKYpeTrwn',
+  'Strat Market 1 P1':'1sGpEto26oUN8B56ndfiGPHcs4Pjj4BpP',
+  'Strat Market 1 P2':'1gNIMn3REs_4lmkdDD_80inHQBAw51tXk',
+  'Strat Market 1 P3':'1d8un1i_8bDccpz8Sat2Hdc6_3q7DjHoL',
+  'Strat Market 1 P4':'1Rky6rRcZtSTK3CVW7n9BubgqK8jjwkIE',
+  'Strat Market 2 P1':'1LmKmvOgn0IP-LgCW-iHCEfVsbtTpgUin',
+  'Strat Market 2 P2':'1XW7X3RqUc4Z36blyoix0HH5WIRASFFOT',
+  'Strat Market 2 P3':'1AEUmiz7fcj4kBbJeGvUWrYt5DkrktKfV',
+  'Strat Market 2 P4':'1bJT2Med8QseXlKtb5-29j587P-QKbF1X',
+  'Strat Market 2 P5':'1HCSCaxXADPIkTJy9Hn9rmLqTiVuFSkpQ',
+  'Support 1 P1':'1AmGAJ9RRSIhi5XKR9aluHUXwkL1pgJbd',
+  'Support 1 P2':'1SwKp7YZ99Y8s3zKQOpEcjcNdKZbXm38d',
+  'Support 2 P1':'1wFeRH9Zvl7tY_aF5VZ4q9Olu6llRuHms',
+  'Support 3 P1':'1T23vGdh0Z5DYeSSndWp87Fzc3wZATCkj',
+  'Support 3 P2':'1CG5fpq0FrakJx9Gj9HvltITope2ksBmK'
+};
+function img(name,alt){
+  var id=ID[name];
+  if(!id) return '<div class="ex-media-item" style="background:#1C1C24;display:flex;align-items:center;justify-content:center;height:220px;"><span style="font-family:var(--fm);font-size:.6rem;color:rgba(240,237,232,.3)">Fichier manquant : '+name+'</span></div>';
+  return '<div class="ex-media-item"><img src="https://lh3.googleusercontent.com/d/'+id+'" alt="'+(alt||name)+'" loading="lazy"><div class="ex-media-caption"><span>'+(alt||name)+'</span><span class="ex-media-badge img">img</span></div></div>';
+}
+function vid(src,label){
+  return '<div class="ex-media-item"><video src="'+src+'" controls preload="metadata"></video><div class="ex-media-caption"><span>'+label+'</span><span class="ex-media-badge vid">▶ vidéo</span></div></div>';
+}
+function group(id,num,title,content,teal){
+  var cls=teal?'t2':'';
+  return '<div class="ex-group" id="'+id+'"><div class="ex-group-hd"><span class="ex-group-num '+cls+'">Exemple '+num+'</span><span class="ex-group-title">'+title+'</span></div><div class="ex-media-grid">'+content+'</div></div>';
+}
+function quicknav(prefix,labels){
+  return '<div class="ex-quicknav">'+labels.map(function(l,i){return '<a href="#'+prefix+'-ex'+(i+1)+'">'+l+'</a>';}).join('')+'</div>';
+}
+</script>
+
+<!-- A01-1 Mix étendu -->
+<div id="va01-1" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c01');return false;">Marketing</a><span class="sep">/</span><span class="cur">Mix étendu</span></div>
+  <div class="topnav"><button class="tnav-btn off">←</button><div class="pills"><span class="pill on" onclick="go('a01-1')">01</span><span class="pill" onclick="go('a01-2')">02</span><span class="pill" onclick="go('a01-3')">03</span></div><button class="tnav-btn" onclick="go('a01-2')">Étude de marché →</button></div>
+  <div class="ac-hd"><div class="ac-eye">Marketing · AC 1/3</div><h1 class="ac-h1">Concevoir un mix étendu pour une offre complexe</h1><div class="ac-sub">Mix · 3 exemples</div></div>
+  <div id="a01-1-qn"></div>
+  <div class="ex-groups" id="a01-1-g"></div>
+  <script>
+    document.getElementById('a01-1-qn').outerHTML = quicknav('a01-1',['Mix 1','Mix 2','Mix 3']);
+    document.getElementById('a01-1-g').innerHTML =
+      group('a01-1-ex1','01','Mix 1', img('Mix 1 P1','Mix 1 — P1') + vid('videos/Mix 1 P2.mp4','Mix 1 — P2 (vidéo)')) +
+      group('a01-1-ex2','02','Mix 2', img('Mix 2 P2','Mix 2 — P2') + vid('videos/Mix 2 P2.mp4','Mix 2 — P2 (vidéo)')) +
+      group('a01-1-ex3','03','Mix 3', img('Mix 3 P1','Mix 3 — P1') + img('Mix 3 P2','Mix 3 — P2') + img('Mix 3 P3','Mix 3 — P3'));
+  </script>
+</div>
+
+<!-- A01-2 Étude de marché -->
+<div id="va01-2" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c01');return false;">Marketing</a><span class="sep">/</span><span class="cur">Étude de marché</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a01-1')">← Mix étendu</button><div class="pills"><span class="pill" onclick="go('a01-1')">01</span><span class="pill on" onclick="go('a01-2')">02</span><span class="pill" onclick="go('a01-3')">03</span></div><button class="tnav-btn" onclick="go('a01-3')">Strat. marketing →</button></div>
+  <div class="ac-hd"><div class="ac-eye">Marketing · AC 2/3</div><h1 class="ac-h1">Mettre en œuvre une étude de marché dans un environnement complexe</h1><div class="ac-sub">Étude · 2 exemples</div></div>
+  <div id="a01-2-qn"></div>
+  <div class="ex-groups" id="a01-2-g"></div>
+  <script>
+    document.getElementById('a01-2-qn').outerHTML = quicknav('a01-2',['Étude 1','Étude 2']);
+    document.getElementById('a01-2-g').innerHTML =
+      group('a01-2-ex1','01','Étude 1', img('Etude 1 P1','Étude 1 — P1')) +
+      group('a01-2-ex2','02','Étude 2', img('Etude 2 P1','Étude 2 — P1') + img('Etude 2 P2','Étude 2 — P2') + img('Etude 2 P3','Étude 2 — P3'));
+  </script>
+</div>
+
+<!-- A01-3 Strat Market -->
+<div id="va01-3" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c01');return false;">Marketing</a><span class="sep">/</span><span class="cur">Stratégie marketing</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a01-2')">← Étude de marché</button><div class="pills"><span class="pill" onclick="go('a01-1')">01</span><span class="pill" onclick="go('a01-2')">02</span><span class="pill on" onclick="go('a01-3')">03</span></div><button class="tnav-btn" onclick="go('c01')">↩ Marketing</button></div>
+  <div class="ac-hd"><div class="ac-eye">Marketing · AC 3/3</div><h1 class="ac-h1">Mettre en place une stratégie marketing dans un environnement complexe</h1><div class="ac-sub">Strat Market · 2 exemples</div></div>
+  <div id="a01-3-qn"></div>
+  <div class="ex-groups" id="a01-3-g"></div>
+  <script>
+    document.getElementById('a01-3-qn').outerHTML = quicknav('a01-3',['Strat Market 1','Strat Market 2']);
+    document.getElementById('a01-3-g').innerHTML =
+      group('a01-3-ex1','01','Strat Market 1', img('Strat Market 1 P1','SM1 — P1')+img('Strat Market 1 P2','SM1 — P2')+img('Strat Market 1 P3','SM1 — P3')+img('Strat Market 1 P4','SM1 — P4')) +
+      group('a01-3-ex2','02','Strat Market 2', img('Strat Market 2 P1','SM2 — P1')+img('Strat Market 2 P2','SM2 — P2')+img('Strat Market 2 P3','SM2 — P3')+img('Strat Market 2 P4','SM2 — P4')+img('Strat Market 2 P5','SM2 — P5'));
+  </script>
+</div>
+
+<!-- A02-1 Offre -->
+<div id="va02-1" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c02');return false;">Vente</a><span class="sep">/</span><span class="cur">Offre personnalisée</span></div>
+  <div class="topnav"><button class="tnav-btn off">←</button><div class="pills"><span class="pill on" onclick="go('a02-1')">01</span><span class="pill" onclick="go('a02-2')">02</span><span class="pill" onclick="go('a02-3')">03</span></div><button class="tnav-btn" onclick="go('a02-2')">Négociation →</button></div>
+  <div class="ac-hd"><div class="ac-eye">Vente · AC 1/3</div><h1 class="ac-h1">Convaincre en exprimant avec empathie l'offre en termes davantage personnalisés</h1><div class="ac-sub">Offre · 2 exemples</div></div>
+  <div id="a02-1-qn"></div>
+  <div class="ex-groups" id="a02-1-g"></div>
+  <script>
+    document.getElementById('a02-1-qn').outerHTML = quicknav('a02-1',['Offre 1','Offre 2']);
+    document.getElementById('a02-1-g').innerHTML =
+      group('a02-1-ex1','01','Offre 1', img('Offre 1 P1','Offre 1 — P1')+img('Offre 1 P2','Offre 1 — P2')) +
+      group('a02-1-ex2','02','Offre 2', img('Offre 2 P1','Offre 2 — P1')+img('Offre 2 P2','Offre 2 — P2')+vid('videos/Offre 2 P3.mp4','Offre 2 — P3 (vidéo)'));
+  </script>
+</div>
+
+<!-- A02-2 Prix -->
+<div id="va02-2" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c02');return false;">Vente</a><span class="sep">/</span><span class="cur">Négociation prix</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a02-1')">← Offre</button><div class="pills"><span class="pill" onclick="go('a02-1')">01</span><span class="pill on" onclick="go('a02-2')">02</span><span class="pill" onclick="go('a02-3')">03</span></div><button class="tnav-btn" onclick="go('a02-3')">OAV →</button></div>
+  <div class="ac-hd"><div class="ac-eye">Vente · AC 2/3</div><h1 class="ac-h1">Négocier le prix : défendre, valoriser l'offre en percevant les stratégies d'achat</h1><div class="ac-sub">Prix · 3 exemples</div></div>
+  <div id="a02-2-qn"></div>
+  <div class="ex-groups" id="a02-2-g"></div>
+  <script>
+    document.getElementById('a02-2-qn').outerHTML = quicknav('a02-2',['Prix 1','Prix 2','Prix 3']);
+    document.getElementById('a02-2-g').innerHTML =
+      group('a02-2-ex1','01','Prix 1', img('Prix 1 P1','Prix 1 — P1')+img('Prix 1 P2','Prix 1 — P2')) +
+      group('a02-2-ex2','02','Prix 2', img('Prix 2 P1','Prix 2 — P1')+img('Prix 2 P2','Prix 2 — P2')) +
+      group('a02-2-ex3','03','Prix 3', vid('videos/Prix 3 P1.mp4','Prix 3 — P1 (vidéo)')+img('Prix 3 P2','Prix 3 — P2'));
+  </script>
+</div>
+
+<!-- A02-3 OAV -->
+<div id="va02-3" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c02');return false;">Vente</a><span class="sep">/</span><span class="cur">OAV</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a02-2')">← Négociation</button><div class="pills"><span class="pill" onclick="go('a02-1')">01</span><span class="pill" onclick="go('a02-2')">02</span><span class="pill on" onclick="go('a02-3')">03</span></div><button class="tnav-btn" onclick="go('c02')">↩ Vente</button></div>
+  <div class="ac-hd"><div class="ac-eye">Vente · AC 3/3</div><h1 class="ac-h1">Utiliser les outils d'aide à la vente à bon escient pour convaincre</h1><div class="ac-sub">OAV · 2 exemples</div></div>
+  <div id="a02-3-qn"></div>
+  <div class="ex-groups" id="a02-3-g"></div>
+  <script>
+    document.getElementById('a02-3-qn').outerHTML = quicknav('a02-3',['OAV 1','OAV 2']);
+    document.getElementById('a02-3-g').innerHTML =
+      group('a02-3-ex1','01','OAV 1', img('OAV 1 P1','OAV 1 — P1')+img('OAV 1 P2','OAV 1 — P2')+img('OAV 1 P3','OAV 1 — P3')) +
+      group('a02-3-ex2','02','OAV 2', img('OAV 2 P1','OAV 2 — P1')+img('OAV 2 P2','OAV 2 — P2')+img('OAV 2 P3','OAV 2 — P3'));
+  </script>
+</div>
+
+<!-- A03-1 RS -->
+<div id="va03-1" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c03');return false;">Communication</a><span class="sep">/</span><span class="cur">Réseaux sociaux</span></div>
+  <div class="topnav"><button class="tnav-btn off">←</button><div class="pills"><span class="pill on" onclick="go('a03-1')">01</span><span class="pill" onclick="go('a03-2')">02</span><span class="pill" onclick="go('a03-3')">03</span></div><button class="tnav-btn" onclick="go('a03-2')">Plan 360° →</button></div>
+  <div class="ac-hd"><div class="ac-eye">Communication · AC 1/3</div><h1 class="ac-h1">Mettre en œuvre une stratégie digitale : réseaux sociaux</h1><div class="ac-sub">RS · 3 exemples</div></div>
+  <div id="a03-1-qn"></div>
+  <div class="ex-groups" id="a03-1-g"></div>
+  <script>
+    document.getElementById('a03-1-qn').outerHTML = quicknav('a03-1',['RS 1','RS 2','RS 3']);
+    document.getElementById('a03-1-g').innerHTML =
+      group('a03-1-ex1','01','RS 1', img('RS 1 P1','RS 1 — P1')+vid('videos/RS 1 P2.mp4','RS 1 — P2 (vidéo)')) +
+      group('a03-1-ex2','02','RS 2', img('RS 2 P1','RS 2 — P1')+img('RS 2 P2','RS 2 — P2')) +
+      group('a03-1-ex3','03','RS 3', img('RS 3 P1','RS 3 — P1')+img('RS 3 P2','RS 3 — P2')+img('RS 3 P3','RS 3 — P3'));
+  </script>
+</div>
+
+<!-- A03-2 Com 360 -->
+<div id="va03-2" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c03');return false;">Communication</a><span class="sep">/</span><span class="cur">Plan 360°</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a03-1')">← Réseaux sociaux</button><div class="pills"><span class="pill" onclick="go('a03-1')">01</span><span class="pill on" onclick="go('a03-2')">02</span><span class="pill" onclick="go('a03-3')">03</span></div><button class="tnav-btn" onclick="go('a03-3')">Strat. moyens →</button></div>
+  <div class="ac-hd"><div class="ac-eye">Communication · AC 2/3</div><h1 class="ac-h1">Proposer un plan de communication 360° en élaborant les supports et en veillant à leur efficacité</h1><div class="ac-sub">Com 360 · 3 exemples</div></div>
+  <div id="a03-2-qn"></div>
+  <div class="ex-groups" id="a03-2-g"></div>
+  <script>
+    document.getElementById('a03-2-qn').outerHTML = quicknav('a03-2',['Com 360 1','Com 360 2','Com 360 3']);
+    document.getElementById('a03-2-g').innerHTML =
+      group('a03-2-ex1','01','Com 360 1', img('Com 360 1 P1','Com 360 1 — P1')) +
+      group('a03-2-ex2','02','Com 360 2', img('Com 360 2 P1','Com 360 2 — P1')+img('Com 360 2 P2','Com 360 2 — P2')+img('Com 360 2 P3','Com 360 2 — P3')) +
+      group('a03-2-ex3','03','Com 360 3', img('Com 360 3 P1','Com 360 3 — P1')+vid('videos/Com 360 3 P2.mp4','Com 360 3 — P2 (vidéo)')+img('Com 360 3 P3','Com 360 3 — P3'));
+  </script>
+</div>
+
+<!-- A03-3 Support -->
+<div id="va03-3" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c03');return false;">Communication</a><span class="sep">/</span><span class="cur">Stratégie de moyens</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a03-2')">← Plan 360°</button><div class="pills"><span class="pill" onclick="go('a03-1')">01</span><span class="pill" onclick="go('a03-2')">02</span><span class="pill on" onclick="go('a03-3')">03</span></div><button class="tnav-btn" onclick="go('c03')">↩ Communication</button></div>
+  <div class="ac-hd"><div class="ac-eye">Communication · AC 3/3</div><h1 class="ac-h1">Établir une stratégie de moyens en utilisant les indicateurs de choix des supports</h1><div class="ac-sub">Support · 3 exemples</div></div>
+  <div id="a03-3-qn"></div>
+  <div class="ex-groups" id="a03-3-g"></div>
+  <script>
+    document.getElementById('a03-3-qn').outerHTML = quicknav('a03-3',['Support 1','Support 2','Support 3']);
+    document.getElementById('a03-3-g').innerHTML =
+      group('a03-3-ex1','01','Support 1', img('Support 1 P1','Support 1 — P1')+img('Support 1 P2','Support 1 — P2')) +
+      group('a03-3-ex2','02','Support 2', img('Support 2 P1','Support 2 — P1')+vid('videos/Support 2 P2.mp4','Support 2 — P2 (vidéo)')) +
+      group('a03-3-ex3','03','Support 3', img('Support 3 P1','Support 3 — P1')+img('Support 3 P2','Support 3 — P2'));
+  </script>
+</div>
+
+<!-- A04-1 Cahier -->
+<div id="va04-1" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c04');return false;">Marketing digital</a><span class="sep">/</span><span class="cur">Cahier des charges</span></div>
+  <div class="topnav"><button class="tnav-btn off">←</button><div class="pills"><span class="pill on2" onclick="go('a04-1')">01</span><span class="pill" onclick="go('a04-2')">02</span><span class="pill" onclick="go('a04-3')">03</span></div><button class="tnav-btn" onclick="go('a04-2')">Indicateurs →</button></div>
+  <div class="ac-hd"><div class="ac-eye t2">Marketing digital · AC 1/3</div><h1 class="ac-h1">Utiliser un cahier des charges e-business</h1><div class="ac-sub">Cahier · 3 exemples</div></div>
+  <div id="a04-1-qn"></div>
+  <div class="ex-groups" id="a04-1-g"></div>
+  <script>
+    document.getElementById('a04-1-qn').outerHTML = quicknav('a04-1',['Cahier 1','Cahier 2','Cahier 3']);
+    document.getElementById('a04-1-g').innerHTML =
+      group('a04-1-ex1','01','Cahier 1', img('Cahier 1 P1','Cahier 1 — P1')+img('Cahier 1 P2','Cahier 1 — P2'),true) +
+      group('a04-1-ex2','02','Cahier 2', img('Cahier 2 P1','Cahier 2 — P1')+img('Cahier 2 P2','Cahier 2 — P2'),true) +
+      group('a04-1-ex3','03','Cahier 3', img('Cahier 3 P1','Cahier 3 — P1')+img('Cahier 3 P2','Cahier 3 — P2')+img('Cahier 3 P3','Cahier 3 — P3')+img('Cahier 3 P4','Cahier 3 — P4'),true);
+  </script>
+</div>
+
+<!-- A04-2 Indic -->
+<div id="va04-2" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c04');return false;">Marketing digital</a><span class="sep">/</span><span class="cur">Indicateurs</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a04-1')">← Cahier des charges</button><div class="pills"><span class="pill" onclick="go('a04-1')">01</span><span class="pill on2" onclick="go('a04-2')">02</span><span class="pill" onclick="go('a04-3')">03</span></div><button class="tnav-btn" onclick="go('a04-3')">E-commerce →</button></div>
+  <div class="ac-hd"><div class="ac-eye t2">Marketing digital · AC 2/3</div><h1 class="ac-h1">Mobiliser des indicateurs de performance en fonction du volume et de la variété des données</h1><div class="ac-sub">Indic · 2 exemples</div></div>
+  <div id="a04-2-qn"></div>
+  <div class="ex-groups" id="a04-2-g"></div>
+  <script>
+    document.getElementById('a04-2-qn').outerHTML = quicknav('a04-2',['Indic 1','Indic 2']);
+    document.getElementById('a04-2-g').innerHTML =
+      group('a04-2-ex1','01','Indic 1', img('Indic 1 P1','Indic 1 — P1')+img('Indic 1 P2','Indic 1 — P2')+img('Indic 1 P3','Indic 1 — P3')+vid('videos/Indic 1 P4.mp4','Indic 1 — P4 (vidéo)'),true) +
+      group('a04-2-ex2','02','Indic 2', img('Indic 2 P1','Indic 2 — P1')+img('Indic 2 P2','Indic 2 — P2')+img('Indic 2 P3','Indic 2 — P3'),true);
+  </script>
+</div>
+
+<!-- A04-3 Spécificité -->
+<div id="va04-3" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c04');return false;">Marketing digital</a><span class="sep">/</span><span class="cur">E-commerce</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a04-2')">← Indicateurs</button><div class="pills"><span class="pill" onclick="go('a04-1')">01</span><span class="pill" onclick="go('a04-2')">02</span><span class="pill on2" onclick="go('a04-3')">03</span></div><button class="tnav-btn" onclick="go('c04')">↩ Mkt digital</button></div>
+  <div class="ac-hd"><div class="ac-eye t2">Marketing digital · AC 3/3</div><h1 class="ac-h1">Intégrer les spécificités du e-commerce</h1><div class="ac-sub">Spécificité · 2 exemples</div></div>
+  <div id="a04-3-qn"></div>
+  <div class="ex-groups" id="a04-3-g"></div>
+  <script>
+    document.getElementById('a04-3-qn').outerHTML = quicknav('a04-3',['Spécificité 1','Spécificité 2']);
+    document.getElementById('a04-3-g').innerHTML =
+      group('a04-3-ex1','01','Spécificité 1', img('Spécificité 1 P1','Spéc 1 — P1')+img('Spécificité 1 P2','Spéc 1 — P2')+img('Spécificité 1 P3','Spéc 1 — P3'),true) +
+      group('a04-3-ex2','02','Spécificité 2', img('Spécificité 2 P1','Spéc 2 — P1')+img('Spécificité 2 P2','Spéc 2 — P2')+img('Spécificité 2 P3','Spéc 2 — P3')+img('Spécificité 2 P4','Spéc 2 — P4'),true);
+  </script>
+</div>
+
+<!-- A05-1 Business M -->
+<div id="va05-1" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c05');return false;">E-business</a><span class="sep">/</span><span class="cur">Modèle d'affaires</span></div>
+  <div class="topnav"><button class="tnav-btn off">←</button><div class="pills"><span class="pill on2" onclick="go('a05-1')">01</span><span class="pill" onclick="go('a05-2')">02</span><span class="pill" onclick="go('a05-3')">03</span></div><button class="tnav-btn" onclick="go('a05-2')">Projet collectif →</button></div>
+  <div class="ac-hd"><div class="ac-eye t2">E-business · AC 1/3</div><h1 class="ac-h1">Concevoir un modèle d'affaires simplifié</h1><div class="ac-sub">Business M · 2 exemples</div></div>
+  <div id="a05-1-qn"></div>
+  <div class="ex-groups" id="a05-1-g"></div>
+  <script>
+    document.getElementById('a05-1-qn').outerHTML = quicknav('a05-1',['Business M 1','Business M 2']);
+    document.getElementById('a05-1-g').innerHTML =
+      group('a05-1-ex1','01','Business M 1', img('Business M 1 P1','Business M 1 — P1'),true) +
+      group('a05-1-ex2','02','Business M 2', img('Business M 2 P1','Business M 2 — P1')+img('Business M 2 P2','Business M 2 — P2'),true);
+  </script>
+</div>
+
+<!-- A05-2 Enrichissement -->
+<div id="va05-2" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c05');return false;">E-business</a><span class="sep">/</span><span class="cur">Projet collectif</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a05-1')">← Modèle d'affaires</button><div class="pills"><span class="pill" onclick="go('a05-1')">01</span><span class="pill on2" onclick="go('a05-2')">02</span><span class="pill" onclick="go('a05-3')">03</span></div><button class="tnav-btn" onclick="go('a05-3')">Créativité →</button></div>
+  <div class="ac-hd"><div class="ac-eye t2">E-business · AC 2/3</div><h1 class="ac-h1">Contribuer à l'enrichissement d'un projet collectif</h1><div class="ac-sub">Enrichissement · 2 exemples</div></div>
+  <div id="a05-2-qn"></div>
+  <div class="ex-groups" id="a05-2-g"></div>
+  <script>
+    document.getElementById('a05-2-qn').outerHTML = quicknav('a05-2',['Enrichissement 1','Enrichissement 2']);
+    document.getElementById('a05-2-g').innerHTML =
+      group('a05-2-ex1','01','Enrichissement 1', img('Enrichissement 1 P1','E1 — P1')+img('Enrichissement 1 P2','E1 — P2')+img('Enrichissement 1 P3','E1 — P3')+img('Enrichissement 1 P4','E1 — P4'),true) +
+      group('a05-2-ex2','02','Enrichissement 2', img('Enrichissement 2 P1','E2 — P1')+img('Enrichissement 2 P2','E2 — P2')+img('Enrichissement 2 P3','E2 — P3')+img('Enrichissement 2 P4','E2 — P4')+img('Enrichissement 2 P5','E2 — P5')+img('Enrichissement 2 P6','E2 — P6'),true);
+  </script>
+</div>
+
+<!-- A05-3 Créativité -->
+<div id="va05-3" class="view">
+  <div class="bc"><a href="#" onclick="go('00');return false;">Accueil</a><span class="sep">/</span><a href="#" onclick="go('c05');return false;">E-business</a><span class="sep">/</span><span class="cur">Créativité</span></div>
+  <div class="topnav"><button class="tnav-btn" onclick="go('a05-2')">← Projet collectif</button><div class="pills"><span class="pill" onclick="go('a05-1')">01</span><span class="pill" onclick="go('a05-2')">02</span><span class="pill on2" onclick="go('a05-3')">03</span></div><button class="tnav-btn" onclick="go('c05')">↩ E-business</button></div>
+  <div class="ac-hd"><div class="ac-eye t2">E-business · AC 3/3</div><h1 class="ac-h1">Utiliser les techniques de créativité individuelle et collective</h1><div class="ac-sub">Créativité · 3 exemples</div></div>
+  <div id="a05-3-qn"></div>
+  <div class="ex-groups" id="a05-3-g"></div>
+  <script>
+    document.getElementById('a05-3-qn').outerHTML = quicknav('a05-3',['Créativité 1','Créativité 2','Créativité 3']);
+    document.getElementById('a05-3-g').innerHTML =
+      group('a05-3-ex1','01','Créativité 1', img('Créativité 1 P1','C1 — P1')+vid('videos/Creativite 1 P2.mp4','Créativité 1 — P2 (vidéo)'),true) +
+      group('a05-3-ex2','02','Créativité 2', img('Créativité 2 P1','C2 — P1')+img('Créativité 2 P2','C2 — P2')+img('Créativité 2 P3','C2 — P3')+img('Créativité 2 P4','C2 — P4')+img('Créativité 2 P5','C2 — P5'),true) +
+      group('a05-3-ex3','03','Créativité 3', img('Créativité 3 P1','C3 — P1')+img('Créativité 3 P2','C3 — P2')+img('Créativité 3 P3','C3 — P3')+img('Créativité 3 P4','C3 — P4')+img('Créativité 3 P5','C3 — P5'),true);
+  </script>
+</div>
+
+</main>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
+  var el=document.getElementById('v'+id);
+  if(el) el.classList.add('on');
+  var comp=id.startsWith('a')?'c'+id.slice(1,3):id.startsWith('c')?id:'00';
+  document.querySelectorAll('[data-v]').forEach(a=>a.classList.remove('on'));
+  document.querySelectorAll('[data-v="'+comp+'"]').forEach(a=>a.classList.add('on'));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('[data-v]').forEach(a=>{
+  a.addEventListener('click',function(e){e.preventDefault();go(this.dataset.v);});
+});
+</script>
+</body>
+</html>
